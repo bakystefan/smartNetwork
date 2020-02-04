@@ -4,12 +4,14 @@ import {
   Text,
   StyleSheet
 } from 'react-native';
+// import { bindActionCreators } from  'redux';
+import { connect } from 'react-redux';
 
-const LoginScreen = () => (
+const LoginScreen = ({ auth }) => (
   <View style={styles.container}>
     <Text>LoginScreen</Text>
   </View>
-);
+)
 
 const styles = StyleSheet.create({
   container: {
@@ -17,6 +19,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
   }
-})
+});
 
-export default LoginScreen;
+const mapStateToProps = state => ({ auth: state.auth });
+
+
+export default connect(mapStateToProps)(LoginScreen);

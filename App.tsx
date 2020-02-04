@@ -9,12 +9,18 @@
  */
 
 import React, {Fragment} from 'react';
+import { Provider } from 'react-redux';
 import Router from './src/router/Router';
+import createStore from './src/redux';
+
+const store = createStore();
 
 const App = () => {
   return (
     <Fragment>
-      <Router />
+      <Provider store={store}>
+        <Router />
+      </Provider>
     </Fragment>
   );
 };
