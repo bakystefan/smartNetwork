@@ -10,8 +10,9 @@ import {
 } from 'react-native';
 import LoginScreenHeader from '../../components/loginScreenHeader';
 import LoginScreenMain from '../../components/loginScreenMain';
+import LoginActions from '../../redux/reducers/auth';
 
-const LoginScreen = ({ auth }) => {
+const LoginScreen = ({ auth, attemptLogin }) => {
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('')
   return (
@@ -31,12 +32,13 @@ const LoginScreen = ({ auth }) => {
         >
           <View style={{ flex: 1 }}>
             <LoginScreenHeader />
+            
             <LoginScreenMain
               password={password}
               email={email}
               setEmail={setEmail}
               setPassword={setPassword}
-              loginFunc={() => {}}
+              loginFunc={() => attemptLogin(email, password)}
             />
           </View>
         </ImageBackground>
@@ -58,4 +60,8 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => ({ auth: state.auth });
 
-export default connect(mapStateToProps)(LoginScreen);
+const mapDispatchToProps = (dispatch: any) => ({
+  attemptLogin: (email: string, password: string) => dispatch(LoginActions.loginRequest(email, password)),
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(LoginScreen);
