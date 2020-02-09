@@ -3,5 +3,6 @@ export default {
 	web: 'https://meetbeam.com',
 	//  apiUrl:'https://api-v3.staging.beamf.com/wapi/'
 	apiUrl: 'https://directory.global.smart.network/directory/',
+	auth0URL: "https://c-dev.auth0.com/",
 	review: 100
 };
