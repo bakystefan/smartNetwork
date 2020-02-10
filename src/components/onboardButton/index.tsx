@@ -4,6 +4,7 @@ import {
     TouchableOpacity,
     StyleSheet
 } from 'react-native';
+import { LATO_BOLD } from '../../assets/fonts';
 
 type OnboardButton = {
     onPressFunc: Function;
@@ -32,8 +33,8 @@ const styles = StyleSheet.create({
     },
     buttonText: {
         color: '#5F72FF',
-        fontSize: 12,
-        fontWeight: 'bold'
+        fontSize: 15,
+        fontFamily: LATO_BOLD
     }
 });
 

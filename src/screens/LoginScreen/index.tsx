@@ -12,10 +12,11 @@ import LoginScreenHeader from '../../components/loginScreenHeader';
 import LoginScreenMain from '../../components/loginScreenMain';
 import LoginActions from '../../redux/reducers/auth';
 
-const LoginScreen = ({ auth, attemptLogin, profile }) => {
+const LoginScreen = ({ auth, attemptLogin, profile, network }) => {
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('')
 
+  console.log("NETWORK", network)
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
@@ -59,7 +60,7 @@ const styles = StyleSheet.create({
   }
 });
 
-const mapStateToProps = state => ({ auth: state.auth, profile: state.profile });
+const mapStateToProps = state => ({ auth: state.auth, profile: state.profile, network: state.network });
 
 const mapDispatchToProps = (dispatch: any) => ({
   attemptLogin: (email: string, password: string) => dispatch(LoginActions.loginRequest(email, password)),

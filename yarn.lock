@@ -4328,6 +4328,18 @@ mkdirp@^0.5.1:
   dependencies:
     minimist "0.0.8"
 
+moment-timezone@^0.5.27:
+  version "0.5.27"
+  resolved "https://registry.yarnpkg.com/moment-timezone/-/moment-timezone-0.5.27.tgz#73adec8139b6fe30452e78f210f27b1f346b8877"
+  integrity sha512-EIKQs7h5sAsjhPCqN6ggx6cEbs94GK050254TIJySD1bzoM5JTYDwAU1IoVOeTOL6Gm27kYJ51/uuvq1kIlrbw==
+  dependencies:
+    moment ">= 2.9.0"
+
+"moment@>= 2.9.0":
+  version "2.24.0"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.24.0.tgz#0d055d53f5052aa653c9f6eb68bb5d12bf5c2b5b"
+  integrity sha512-bV7f+6l2QigeBBZSM/6yTNq4P2fNpSWj/0e7jQcy87A8e7o2nAfP/34/2ky5Vw4B9S446EtIhodAzkFCcR4dQg==
+
 morgan@^1.9.0:
   version "1.9.1"
   resolved "https://registry.yarnpkg.com/morgan/-/morgan-1.9.1.tgz#0a8d16734a1d9afbc824b99df87e738e58e2da59"
@@ -4976,10 +4988,15 @@ react-is@^16.7.0, react-is@^16.8.1, react-is@^16.8.4, react-is@^16.8.6, react-is
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.12.0.tgz#2cc0fe0fba742d97fd527c42a13bec4eeb06241c"
   integrity sha512-rPCkf/mWBtKc97aLL9/txD8DZdemK0vkA3JMLShjlJB3Pj3s+lpf1KaBzMfQrAmhMQB0n1cU/SUGgKKBCe837Q==
 
-react-native-circular-progress@^1.3.6:
-  version "1.3.6"
-  resolved "https://registry.yarnpkg.com/react-native-circular-progress/-/react-native-circular-progress-1.3.6.tgz#023f74785274ea1a4473ca9291e600e5d33ee892"
-  integrity sha512-0P+RIZ1SdufLNI9oXhZCx1QBwvdkgJeyLHv+243jSvqrRVcfp6E31ktrdZr8QOpI2sG3g3n4NRrtjMxHKL7ryw==
+react-native-device-info@^5.5.1:
+  version "5.5.1"
+  resolved "https://registry.yarnpkg.com/react-native-device-info/-/react-native-device-info-5.5.1.tgz#1b942f0d868161f96305055c296818ba415813dc"
+  integrity sha512-ceaGnxOAULRzVpx03bPjbayuHD5g21CcdmKKvLK5mV72sbguNZbTHNmnH3//Bx9Hfy1XOm6zHhM5Yfb7Glqplw==
+
+react-native-float-text-input@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/react-native-float-text-input/-/react-native-float-text-input-1.0.0.tgz#28a4aab691c6af8fd7f6293b8f6f9638ca58ba73"
+  integrity sha512-fyjuJpJOJjsfmKFp7KxC0XJ04T11CCOZc4VQgEiIZycF1RI+ZKiS4Ym2MKNRW5hfoPmTsck5ff1p/mHUlavg8g==
   dependencies:
     prop-types "^15.7.2"
 

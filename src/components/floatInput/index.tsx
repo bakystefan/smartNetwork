@@ -5,6 +5,7 @@ import {
   Animated,
   StyleSheet,
 } from 'react-native';
+import { LATO_REGULAR, LATO_BOLD } from '../../assets/fonts';
 
 const initialState = {
   isFocused: false,
@@ -14,13 +15,14 @@ const floatTextInputInactive = {
   color: '#FFF',
   top: 18,
   fontSize: 15,
-  fontWeight: 'bold',
+  fontFamily: LATO_BOLD
 };
 
 const floatTextInputActive = {
   color: '#FFF',
   top: 0,
   fontSize: 10,
+  fontFamily: LATO_REGULAR
 };
 
 const styles = StyleSheet.create({
@@ -37,7 +39,7 @@ const styles = StyleSheet.create({
     height: 43,
     color: 'white',
     fontSize: 15,
-    fontWeight: 'bold',
+    fontFamily: LATO_BOLD
   },
 });
 

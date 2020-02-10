@@ -2,11 +2,10 @@ import { put, take, call, select } from 'redux-saga/effects';
 
 export function* callLogin(apiCall: any, postApiCall: any) {
     const response = yield apiCall;
-    if (!isUnauthorized(response)) {
+    if (isUnauthorized(response)) {
         return response;
     }
-
-    const { error } = response;
+    const { data: { error } } = response;
     if (error && error === -310) {
         yield postApiCall;
     }
@@ -15,5 +14,5 @@ export function* callLogin(apiCall: any, postApiCall: any) {
 }
 
 function isUnauthorized(resp: any) {
-    return resp.status === 403 || resp.status === 401;
+    return resp.status !== 500;
 }

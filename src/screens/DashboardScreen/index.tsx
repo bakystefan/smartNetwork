@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   View,
   Text,
@@ -6,10 +6,45 @@ import {
 } from 'react-native';
 // import { bindActionCreators } from  'redux';
 import { connect } from 'react-redux';
+import DeviceInfo from 'react-native-device-info'
 import { AnimatedCircularProgress } from '../../animated-circular';
 import { LATO_BOLD } from '../../assets/fonts';
 
-const DashboardScreen = ({ auth }) => {
+const DashboardScreen = ({ network, auth }) => {
+  console.log("net", network)
+  useEffect(() => {
+    console.log("NETWORK", network)
+    console.log("AUTH", auth)
+    const ws = new WebSocket('wss://c.smart.network/appData', '', {
+    headers: {
+      "Authorization": auth.accessToken,
+      "Smart-Network-Router": network.networkList[0].router,
+      "Smart-Device-Timezone-IANA": auth.tzIana,
+      "Smart-Network-IP": "172.30.7.252",
+      "Smart-Network-AppVersion": 9,
+      "Smart-Network-UDID": DeviceInfo.getUniqueId(),
+    }
+  })
+
+  ws.onopen = () => {
+    // connection opened
+    console.log("CONNECTION OPEN");
+  };
+
+  ws.onmessage = (e) => {
+    // a message was received
+    // console.log("DATA",e.data);
+    console.log("PARSED DATA", e.data)
+    const data = JSON.parse(e.data);
+    if (data.message === 'Connected') {
+      setInterval(() => {
+        ws.send("torch"); // send a message
+      }, 5000)
+    }
+  };
+
+  }, [])
+  
   return (
     <View style={styles.container}>
       <AnimatedCircularProgress
@@ -178,7 +213,7 @@ const styles = StyleSheet.create({
   }
 });
 
-const mapStateToProps = state => ({ auth: state.auth });
+const mapStateToProps = ({ network, auth }) => ({ network, auth });
 
 
 export default connect(mapStateToProps)(DashboardScreen);
