@@ -1,6 +1,6 @@
 import { put, take, call, select } from 'redux-saga/effects';
 
-export const selectAuthToken = (state: any) => state.login.authToken;
+export const selectAuthToken = (state: any) => state.login.accessToken;
 export const selectAuthRefresh = (state: any) => state.login.authRefresh;
 
 import LoginActions from '../reducers/auth';
@@ -11,8 +11,7 @@ export function* callApi(apiCall: any, api: any) {
     if (!isUnauthorized(response)) {
         return response;
     }
-    // this triggers your UI to show a login form
-    //yield put({ type: 'RELOGIN' })
+
 
     const AuthToken = yield select(selectAuthToken);
 
