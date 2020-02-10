@@ -5,6 +5,7 @@ import {
     StyleSheet,
     Image
 } from 'react-native';
+import { LATO_BOLD } from '../../assets/fonts';
 
 const LoginScreenHeader = () => (
     <View style={styles.container}>
@@ -29,10 +30,10 @@ const styles = StyleSheet.create({
         marginLeft: 40,
     },
     textStyle: {
-        fontWeight: '600',
         fontSize: 20,
         lineHeight: 21,
-        color: 'white'
+        color: 'white',
+        fontFamily: LATO_BOLD
     }
 });
 

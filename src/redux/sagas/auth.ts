@@ -1,11 +1,15 @@
 import { call, put, select } from 'redux-saga/effects';
+import { NavigationActions } from 'react-navigation';
 import { callApi } from './call-api-saga';
 import { callLogin } from './call-login';
 import moment from 'moment-timezone';
 import DeviceInfo from 'react-native-device-info';
 
 import LoginActions from '../reducers/auth';
+import NetworkActions from '../reducers/network';
 import ProfileActions from '../reducers/profile';
+import Routes from '../../router/Routes';
+import { navigate } from '../../config/navigation-config';
 
 const AUDIENCE = "https://smart.server/";
 const SCOPE = "openid profile offline_access email app:normal";
@@ -56,7 +60,7 @@ export function* login(api: any, auth0Api: any, { email, password }: LoginAction
 				email_verified,
 			} = data;
 
-			if(profileFetchSuccess) {
+			if (profileFetchSuccess) {
 				yield put(ProfileActions.profileSuccess(app_server, sub, nickname, name, picture, updated_at, email, email_verified, false))
 				yield put(LoginActions.loginSuccess(id_token, refresh_token, access_token, expires_in));
 				const deviceId = DeviceInfo.getUniqueId();
@@ -67,6 +71,24 @@ export function* login(api: any, auth0Api: any, { email, password }: LoginAction
 				const fetchNetworksCall = call(api.getAllNetworks, deviceId, _id);
 				const firstNetworkCall = call(api.getAllNetworksFirstTime, deviceId, _id);
 				const fetchNetworks = yield call(callLogin, fetchNetworksCall, firstNetworkCall);
+				const { ok: fetchNetworkStatus = false, error } = fetchNetworks;
+				if (fetchNetworkStatus) {
+					const {
+						data: {
+							data: {
+								org_id: orgId,
+								selfserve: selfServe,
+								app_settings: appSettings,
+								org_logo: orgLogo,
+								org_name: orgName,
+								network_list: networkList
+							}
+						}
+					} = fetchNetworks;
+					yield put(NetworkActions.networkSuccess(orgId, selfServe, appSettings, orgLogo, orgName, networkList))
+					return navigate({ routeName: Routes.DashboardScreen });
+				}
+				console.log("FETCH NETWORK!", fetchNetworks)
 			}
 		} else {
 			yield put(LoginActions.loginFailure({ error: "Bad credentials"} || 'Network Error'));

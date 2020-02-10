@@ -1,5 +1,6 @@
 import { createReducer, createActions } from 'reduxsauce';
 import Immutable from 'seamless-immutable';
+import moment from 'moment-timezone'
 
 /* ------------- Types and Action Creators ------------- */
 
@@ -28,7 +29,8 @@ export const INITIAL_STATE = Immutable({
     millisecondsToExpire: null,
     error: null,
     fetching: false,
-    loading: false
+    loading: false,
+    tzIana: moment.tz.guess(true)
 });
 
 /* ------------- Reducers ------------- */

@@ -8,18 +8,25 @@
  * @format
  */
 
-import React, {Fragment} from 'react';
+import React, {Fragment, useEffect} from 'react';
 import { Provider } from 'react-redux';
 import Router from './src/router/Router';
 import createStore from './src/redux';
+import { setNavigator } from './src/config/navigation-config';
 
 const store = createStore();
 
 const App = () => {
+  this.navigationRef = React.createRef();
+
+  useEffect(() => {
+    setNavigator(this.navigationRef.current)
+  }, [])
+
   return (
     <Fragment>
       <Provider store={store}>
-        <Router />
+        <Router ref={this.navigationRef}/>
       </Provider>
     </Fragment>
   );

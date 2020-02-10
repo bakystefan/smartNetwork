@@ -5,8 +5,8 @@ import {
 } from 'react-native';
 
 const forFirstAuthObject = {
-    os: Platform.OS === 'ios' ? 'IOS' : 'Android',
-    notif_client_id: Platform.OS === 'ios' ? 'APN' : 'Firebase',
+    os: Platform.select({ ios: 'IOS', android: 'Android '}),
+    notif_client_id: Platform.select({ ios: 'APN', android: 'Android '}),
     tz_iana: moment.tz.guess(true)
 }
 
