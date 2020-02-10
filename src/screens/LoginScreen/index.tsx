@@ -11,12 +11,18 @@ import {
 import LoginScreenHeader from '../../components/loginScreenHeader';
 import LoginScreenMain from '../../components/loginScreenMain';
 import LoginActions from '../../redux/reducers/auth';
+import ReactNativeBiometrics from 'react-native-biometrics'
 
 const LoginScreen = ({ auth, attemptLogin, profile, network }) => {
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('')
-
-  console.log("NETWORK", network)
+  useEffect(() => {
+    checkForBiometric();
+  }, [])
+  const checkForBiometric = async () => {
+    const { biometryType } = await ReactNativeBiometrics.isSensorAvailable()
+    console.log("JA SAM BIOMETRIC TYPE ", biometryType);
+  }
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
