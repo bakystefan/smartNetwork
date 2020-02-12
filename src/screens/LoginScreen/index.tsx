@@ -23,12 +23,21 @@ const LoginScreen = ({ auth, attemptLogin, profile, network }) => {
   
   const checkForBiometric = async () => {
     try {
+      const { available, biometryType } = await ReactNativeBiometrics.isSensorAvailable()
       const credentials = await Keychain.getGenericPassword();
       if (credentials) {
-        const { username, password } = credentials;
-        const { success } = await ReactNativeBiometrics.simplePrompt({ promptMessage: 'Confirm fingerprint' })
-        if (success) {
-          attemptLogin(username, password);
+        if (available && biometryType === ReactNativeBiometrics.TouchID) {
+          console.log('TouchID is supported')
+        } else if (available && biometryType === ReactNativeBiometrics.FaceID) {
+          console.log('FaceID is supported')
+        } else if (available && biometryType === ReactNativeBiometrics.Biometrics) {
+          const { username, password } = credentials;
+          const { success } = await ReactNativeBiometrics.simplePrompt({ promptMessage: 'Confirm fingerprint' })
+          if (success) {
+            attemptLogin(username, password);
+          }
+        } else {
+          console.log('Biometrics not supported')
         }
       }
       
