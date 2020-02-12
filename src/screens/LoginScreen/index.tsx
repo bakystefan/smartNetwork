@@ -12,6 +12,7 @@ import LoginScreenHeader from '../../components/loginScreenHeader';
 import LoginScreenMain from '../../components/loginScreenMain';
 import LoginActions from '../../redux/reducers/auth';
 import ReactNativeBiometrics from 'react-native-biometrics'
+import * as Keychain from 'react-native-keychain';
 
 const LoginScreen = ({ auth, attemptLogin, profile, network }) => {
   const [password, setPassword] = useState('');
@@ -19,10 +20,23 @@ const LoginScreen = ({ auth, attemptLogin, profile, network }) => {
   useEffect(() => {
     checkForBiometric();
   }, [])
+  
   const checkForBiometric = async () => {
-    const { biometryType } = await ReactNativeBiometrics.isSensorAvailable()
-    console.log("JA SAM BIOMETRIC TYPE ", biometryType);
+    try {
+      const credentials = await Keychain.getGenericPassword();
+      if (credentials) {
+        const { username, password } = credentials;
+        const { success } = await ReactNativeBiometrics.simplePrompt({ promptMessage: 'Confirm fingerprint' })
+        if (success) {
+          attemptLogin(username, password);
+        }
+      }
+      
+    } catch (error) {
+      console.log("JA  SAM ERROR ", error);
+    }
   }
+
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
@@ -46,7 +60,7 @@ const LoginScreen = ({ auth, attemptLogin, profile, network }) => {
               email={email}
               setEmail={setEmail}
               setPassword={setPassword}
-              loginFunc={() => attemptLogin("pavel@smart.network", '12345^aB')}
+              loginFunc={() => attemptLogin(email, password)}
             />
           </View>
         </ImageBackground>
