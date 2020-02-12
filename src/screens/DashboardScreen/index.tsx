@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -6,65 +6,65 @@ import {
 } from 'react-native';
 // import { bindActionCreators } from  'redux';
 import { connect } from 'react-redux';
-import DeviceInfo from 'react-native-device-info'
+import DeviceInfo from 'react-native-device-info';
+import * as Animatable from 'react-native-animatable';
+import NetworkActions from '../../redux/reducers/network';
 import { AnimatedCircularProgress } from '../../animated-circular';
 import { LATO_BOLD } from '../../assets/fonts';
+import WebSocketService from '../../services/websocket';
+import { calculatePercentageOfNumber } from '../../utils/calculatePrecentOfNumber';
+import { calculateBitsToMbits } from '../../utils/calculateBitstToMbits';
 
 const DashboardScreen = ({ network, auth }) => {
-  console.log("net", network)
-  useEffect(() => {
-    console.log("NETWORK", network)
-    console.log("AUTH", auth)
-    const ws = new WebSocket('wss://c.smart.network/appData', '', {
-    headers: {
-      "Authorization": auth.accessToken,
-      "Smart-Network-Router": network.networkList[0].router,
-      "Smart-Device-Timezone-IANA": auth.tzIana,
-      "Smart-Network-IP": "172.30.7.252",
-      "Smart-Network-AppVersion": 9,
-      "Smart-Network-UDID": DeviceInfo.getUniqueId(),
-    }
-  })
+  const [currentSpeed, setCurrentSpeed] = useState({ rx: 0, tx: 0 });
 
-  ws.onopen = () => {
-    // connection opened
-    console.log("CONNECTION OPEN");
-  };
-
-  ws.onmessage = (e) => {
-    // a message was received
-    // console.log("DATA",e.data);
-    console.log("PARSED DATA", e.data)
+  const onMessage = (e: any) => {
     const data = JSON.parse(e.data);
-    if (data.message === 'Connected') {
-      setInterval(() => {
-        ws.send("torch"); // send a message
-      }, 5000)
+    if (data.message === 'OK' && data.meta === 'torch') {
+      const { data: { rx, tx } } = data;
+      setCurrentSpeed({ rx, tx })
     }
-  };
+  }
 
+  const setCurrentNetwork = (url, networkRouter, auth) => {
+    const ws = new WebSocketService().createWss(url, {
+      headers: {
+        "Authorization": auth.accessToken,
+        "Smart-Network-Router": networkRouter,
+        "Smart-Device-Timezone-IANA": auth.tzIana,
+        "Smart-Network-IP": "172.30.7.252",
+        "Smart-Network-AppVersion": 9,
+        "Smart-Network-UDID": DeviceInfo.getUniqueId(),
+      }
+    }, onMessage);
+  }
+
+  useEffect(() => {
+    setCurrentNetwork('wss://c.smart.network/appData', network.networkList[0].router, auth)
   }, [])
   
+  const { routerData: { ispUp, ispDown, receive, transmit } } = network;
+  const { rx, tx } = currentSpeed;
   return (
     <View style={styles.container}>
       <AnimatedCircularProgress
         size={220}
-        secondCicularSize={264}
+        secondCicularSize={268}
         arcSweepAngle={270}
-        width={20}
+        width={21}
         rotation={0}
-        fill={100}
+        fill={ispUp}
         tintColor="#FFFFFF"
         lineCap='round'
-        secondFill={75}
+        secondFill={Math.round(calculatePercentageOfNumber(transmit, ispUp))}
         secondColor="#D9D9D9"
-        thirdFill={50}
+        thirdFill={Math.round(calculatePercentageOfNumber(calculateBitsToMbits(tx), ispUp))}
         thirdColor="#5F72FF"
-        secondCircularFill={100}
+        secondCircularFill={ispDown}
         secondCircularTintColor="#FFFFFF"
-        secondCircularSecondFill={85}
+        secondCircularSecondFill={Math.round(calculatePercentageOfNumber(receive, ispDown))}
         secondCircularSecondColor="#D9D9D9"
-        secondCircularThirdFill={70}
+        secondCircularThirdFill={Math.round(calculatePercentageOfNumber(calculateBitsToMbits(rx), ispUp))}
         secondCircularThirdColor="#6EE294"
         duration={1200}
         showArrow
@@ -76,24 +76,40 @@ const DashboardScreen = ({ network, auth }) => {
             </View>
             <View style={styles.rowBox}>
               <View style={styles.downColumn}>
-                <Text style={styles.currentSpeedDlValue}>102.2</Text>
+                <Animatable.Text
+                  animation="pulse"
+                  easing="ease-out-quint"
+                  iterationCount="infinite"
+                  iterationDelay={5000}
+                  style={styles.currentSpeedDlValue}
+                >
+                  {calculateBitsToMbits(rx) === 0 ? '0.0' : calculateBitsToMbits(rx)}
+                </Animatable.Text>
                 <View style={styles.ispCalibrateTitleBox}>
                   <Text style={styles.ispCalibrateTitle}>ISP SPEED</Text>
                 </View>
                 <View style={styles.rowIspCalibrate}>
-                  <Text style={styles.greenValue}>10.3</Text>
-                  <Text style={styles.blueValue}>2.4</Text>
+                  <Text style={styles.greenValue}>{ispDown === 100 ? '100.0' : ispDown}</Text>
+                  <Text style={styles.blueValue}>{ispUp === 100 ? '100.0' : ispUp}</Text>
                 </View>
                 <View style={styles.roundWhite} />
               </View>
               <View style={styles.upColumn}>
-                <Text style={styles.currentSpeedUpValue}>33.2</Text>
+                <Animatable.Text
+                    animation="pulse"
+                    easing="ease-out-quint"
+                    iterationCount="infinite"
+                    iterationDelay={5000}
+                    style={styles.currentSpeedUpValue}
+                  >
+                  {calculateBitsToMbits(tx) === 0 ? '0.0' : calculateBitsToMbits(tx)}
+                </Animatable.Text>
                 <View style={styles.ispCalibrateTitleBox}>
                   <Text style={styles.ispCalibrateTitle}>CALIBRATED</Text>
                 </View>
                 <View style={[styles.rowIspCalibrate, { justifyContent: 'space-evenly' }]}>
-                  <Text style={styles.greenValue}>15.0</Text>
-                  <Text style={styles.blueValue}>1.4</Text>
+                  <Text style={styles.greenValue}>{receive}</Text>
+                  <Text style={styles.blueValue}>{transmit}</Text>
                 </View>
                 <View style={styles.roundGray} />
               </View>
@@ -126,9 +142,11 @@ const styles = StyleSheet.create({
   },
   downColumn: {
     flexDirection: 'column',
+    flex: 1
   },
   upColumn: {
     flexDirection: 'column',
+    flex: 1
   },
   currentSpeedText: {
     color: '#929292',
@@ -164,7 +182,7 @@ const styles = StyleSheet.create({
     lineHeight: 11,
     letterSpacing: 0.07,
     fontFamily: LATO_BOLD,
-    textAlign: 'left'
+    textAlign: 'center'
   },
   rowIspCalibrate: {
     flexDirection: 'row',
@@ -172,13 +190,13 @@ const styles = StyleSheet.create({
   },
   greenValue: {
     color: '#4EA169',
-    fontSize: 12,
+    fontSize: 11,
     fontFamily: LATO_BOLD,
     letterSpacing: 0.08
   },
   blueValue: {
     color: '#424FB2',
-    fontSize: 12,
+    fontSize: 11,
     fontFamily: LATO_BOLD,
     letterSpacing: 0.08
   },
@@ -215,5 +233,8 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = ({ network, auth }) => ({ network, auth });
 
+const mapDispatchToProps = (dispatch: any) => ({
+  storeRouterData: (routerData: any) => dispatch(NetworkActions.storeRouterData(routerData)),
+})
 
-export default connect(mapStateToProps)(DashboardScreen);
+export default connect(mapStateToProps, mapDispatchToProps)(DashboardScreen);
