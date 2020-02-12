@@ -14,7 +14,7 @@ import Router from './src/router/Router';
 import createStore from './src/redux';
 import { setNavigator } from './src/config/navigation-config';
 
-const store = createStore();
+export const reduxStore = createStore();
 
 const App = () => {
   this.navigationRef = React.createRef();
@@ -25,7 +25,7 @@ const App = () => {
 
   return (
     <Fragment>
-      <Provider store={store}>
+      <Provider store={reduxStore}>
         <Router ref={this.navigationRef}/>
       </Provider>
     </Fragment>

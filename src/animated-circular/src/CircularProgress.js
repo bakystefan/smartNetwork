@@ -154,7 +154,7 @@ export default class CircularProgress extends React.PureComponent {
                 borderTopLeftRadius: 10,
                 borderBottomLeftRadius: 10,
                 height: 22,
-                width: 50,
+                width: 45,
                 justifyContent: 'center',
                 alignItems: 'center'
               }}
@@ -176,7 +176,7 @@ export default class CircularProgress extends React.PureComponent {
                 <Path
                   d={circlePath}
                   stroke={tintColor}
-                  strokeWidth={width}
+                  strokeWidth={width + 1}
                   strokeLinecap={lineCap}
                   fill="transparent"
                 />
@@ -202,27 +202,27 @@ export default class CircularProgress extends React.PureComponent {
               {showArrow && (
                 <>
                   <Line
-                    x1="112"
+                    x1="110"
                     y1="14"
-                    x2="112"
+                    x2="110"
                     y2="7"
                     stroke="black"
                     strokeWidth="1.5"
                     opacity="0.3"
                   />
                   <Line
-                    x1="117"
+                    x1="115"
                     y1="11"
-                    x2="112"
+                    x2="110"
                     y2="5"
                     stroke="black"
                     strokeWidth="1.5"
                     opacity="0.3"
                   />
                   <Line
-                    x1="112"
+                    x1="110"
                     y1="5"
-                    x2="107"
+                    x2="105"
                     y2="11"
                     stroke="black"
                     strokeWidth="1.5"
@@ -245,7 +245,7 @@ export default class CircularProgress extends React.PureComponent {
               borderTopLeftRadius: 10,
               borderBottomLeftRadius: 10,
               height: 22,
-              width: 50,
+              width: 45,
               justifyContent: 'center',
               alignItems: 'center'
             }}
@@ -267,7 +267,7 @@ export default class CircularProgress extends React.PureComponent {
                 <Path
                   d={circlePathSecond}
                   stroke={secondCircularTintColor}
-                  strokeWidth={width}
+                  strokeWidth={width + 1}
                   strokeLinecap={lineCap}
                   fill="transparent"
                 />
