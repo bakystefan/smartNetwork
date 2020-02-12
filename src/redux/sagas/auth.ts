@@ -10,6 +10,7 @@ import NetworkActions from '../reducers/network';
 import ProfileActions from '../reducers/profile';
 import Routes from '../../router/Routes';
 import { navigate } from '../../config/navigation-config';
+import * as Keychain from 'react-native-keychain';
 
 const AUDIENCE = "https://smart.server/";
 const SCOPE = "openid profile offline_access email app:normal";
@@ -27,7 +28,6 @@ export function* login(api: any, auth0Api: any, { email, password }: LoginAction
 	const checkUserCall = call(api.checkForUserInfo, email);
 	const responseFromCheckUser = yield call(callApi, checkUserCall, api);
 	const { ok: userFound, data } = responseFromCheckUser;
-	console.log("JA SAM USER FOUND ", data);
 	if (userFound) {
 		const { data: { auth_client_id, auth_connection, app_server, _id } } = data;
 		const fetchAuthCall = call(auth0Api.getTokens, {
@@ -43,6 +43,7 @@ export function* login(api: any, auth0Api: any, { email, password }: LoginAction
 		const { data: authData, ok: authPass } = fetchAuth;
 
 		if (authPass) {
+			yield Keychain.setGenericPassword(email, password);
 			const { id_token, refresh_token, access_token, expires_in } = authData;
 			yield call(api.setAuthToken, access_token);
 			yield call(auth0Api.setAuthToken, access_token);
@@ -56,12 +57,12 @@ export function* login(api: any, auth0Api: any, { email, password }: LoginAction
 				name,
 				picture,
 				updated_at,
-				email,
+				email: emailFromAuth,
 				email_verified,
 			} = data;
 
 			if (profileFetchSuccess) {
-				yield put(ProfileActions.profileSuccess(app_server, sub, nickname, name, picture, updated_at, email, email_verified, false))
+				yield put(ProfileActions.profileSuccess(app_server, sub, nickname, name, picture, updated_at, emailFromAuth, email_verified, false))
 				yield put(LoginActions.loginSuccess(id_token, refresh_token, access_token, expires_in));
 				const deviceId = DeviceInfo.getUniqueId();
 				const timezone = moment.tz.guess(true);
