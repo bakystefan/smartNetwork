@@ -27,7 +27,6 @@ export default class AnimatedCircularProgress extends React.PureComponent {
   }
 
   componentDidUpdate(prevProps) {
-    console.log("BLA",prevProps.secondCircularThirdFill,  this.props.secondCircularThirdFill)
     if (prevProps.fill !== this.props.fill) {
       this.animate();
     }

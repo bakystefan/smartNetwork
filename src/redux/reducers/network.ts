@@ -7,6 +7,7 @@ const { Types, Creators } = createActions({
     networkRequest: [],
     networkSuccess: ['orgId', 'selfServe', 'appSettings', 'orgLogo', 'orgName', 'networkList'],
     networkFailure: ['error'],
+    storeRouterData: ['routerData']
 });
 
 export const NetworkTypes = Types;
@@ -23,6 +24,12 @@ export const INITIAL_STATE = Immutable({
     networkList: null,
     fetching: false,
     error: null,
+    routerData: {
+        ispUp: 0,
+        ispDown: 0,
+        receive: 0,
+        transmit: 0
+    }
 });
 
 /* ------------- Reducers ------------- */
@@ -55,6 +62,14 @@ export const failure = (state: any, { error }: any) =>
         networkList: null,
     });
 
+export const storeDataAboutRouter = (state: any, data: any) => {
+    console.log("AAAA!!!!!! DATAAA ROUTER", data);
+    const { routerData } = data;
+    return state.merge({
+        routerData
+    });
+}
+
 
 /* ------------- Hookup Reducers To Types ------------- */
 
@@ -62,6 +77,7 @@ export const reducer = createReducer(INITIAL_STATE, {
     [Types.NETWORK_REQUEST]: request,
     [Types.NETWORK_SUCCESS]: success,
     [Types.NETWORK_FAILURE]: failure,
+    [Types.STORE_ROUTER_DATA]: storeDataAboutRouter
 });
 
 /* ------------- Selectors ------------- */
