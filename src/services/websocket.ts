@@ -46,6 +46,7 @@ class WebSocketService implements IWebSocketService {
         onMessageCallback(e)
       }
 
+      console.log("TORCH ", JSON.parse(e.data));
       const data = JSON.parse(e.data);
       if (data.message === 'Connected') {
         setInterval(() => {

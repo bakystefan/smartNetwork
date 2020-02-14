@@ -1,8 +1,102 @@
+// const identities = [
+//   {
+//     _id: "BORKO",
+//     _rev: "261-d5b91d81c8b64c11f5dded28de305264",
+//     smart_router: "40464883-6ac2-416e-b31f-8d92b61c3c33",
+//     smart_user: "2a7b9103-3b1f-4342-9f71-1aa152f31976",
+//     contact_ref: "",
+//     this_is_me: "0",
+//     pic_ref: "https://s3-us-west-2.amazonaws.com/smart-avatars/2a7b9103-3b1f-4342-9f71-1aa152f31976/40464883-6ac2-416e-b31f-8d92b61c3c33/39060001-D845-46E7-A266-54A893ABAE44/avatar.png",
+//     devices: [
+//       {
+//         MAC: "FC:2A:9C:99:06:9A",
+//         MAC_info: "Unknown",
+//         ip: "192.168.88.231",
+//         hostname: "PavelPovsiPhone",
+//         name: "PavelPovsiPhone",
+//         blocked: false,
+//         source: "show_all",
+//         rx: 400,
+//         tx: 300
+//       },
+//       {
+//         MAC: "FC:2A:9C:99:06:9A",
+//         MAC_info: "Unknown",
+//         ip: "192.168.88.231",
+//         hostname: "PavelPovsiPhone",
+//         name: "PavelPovsiPhone",
+//         blocked: false,
+//         source: "show_all",
+//         rx: 700,
+//         tx: 200
+//       },
+//       {
+//         MAC: "FC:2A:9C:99:06:9A",
+//         MAC_info: "Unknown",
+//         ip: "192.168.88.231",
+//         hostname: "PavelPovsiPhone",
+//         name: "LUKICA",
+//         blocked: false,
+//         source: "show_all",
+//         rx: 800,
+//         tx: 600
+//       },
+//     ],
+//     rx: 1900,
+//     tx: 1100,
+//     contact: "",
+//     default: false,
+//     name: "Pavel Identity",
+//     name_key: "pavel_identity",
+//     mtime: 1581436901363,
+//   },
+//   {
+//     _id: "LUKA",
+//     _rev: "261-d5b91d81c8b64c11f5dded28de305264",
+//     smart_router: "40464883-6ac2-416e-b31f-8d92b61c3c33",
+//     smart_user: "2a7b9103-3b1f-4342-9f71-1aa152f31976",
+//     contact_ref: "",
+//     this_is_me: "0",
+//     pic_ref: "https://s3-us-west-2.amazonaws.com/smart-avatars/2a7b9103-3b1f-4342-9f71-1aa152f31976/40464883-6ac2-416e-b31f-8d92b61c3c33/39060001-D845-46E7-A266-54A893ABAE44/avatar.png",
+//     devices: [
+//       {
+//         MAC: "FC:2A:9C:99:06:9A",
+//         MAC_info: "Unknown",
+//         ip: "192.168.88.231",
+//         hostname: "PavelPovsiPhone",
+//         name: "GOLMAN",
+//         blocked: false,
+//         source: "show_all",
+//         rx: 400,
+//         tx: 200
+//       },
+//       {
+//         MAC: "FC:2A:9C:99:06:9A",
+//         MAC_info: "Unknown",
+//         ip: "192.168.88.231",
+//         hostname: "PavelPovsiPhone",
+//         name: "JOVa",
+//         blocked: false,
+//         source: "show_all",
+//         rx: 1000,
+//         tx: 200
+//       },
+//     ],
+//     rx: 1400,
+//     tx: 400,
+//     contact: "",
+//     default: false,
+//     name: "Pavel Identity",
+//     name_key: "pavel_identity",
+//     mtime: 1581436901363,
+//   }
+// ]
+
 import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
-  StyleSheet
+  StyleSheet,
 } from 'react-native';
 // import { bindActionCreators } from  'redux';
 import { connect } from 'react-redux';
@@ -14,14 +108,55 @@ import { LATO_BOLD } from '../../assets/fonts';
 import WebSocketService from '../../services/websocket';
 import { calculatePercentageOfNumber } from '../../utils/calculatePrecentOfNumber';
 import { calculateBitsToMbits } from '../../utils/calculateBitstToMbits';
+import TopUserContainer from '../../components/topUserContainer';
+
+const reduceDeviceDefault = { rx: 0, tx: 0, greatestRx: { rx: 0, }, greatestTx: { tx: 0 }};
+
+let greatestIdentity = { biggestNumber: 0, typeOf: null, identity: null };
 
 const DashboardScreen = ({ network, auth }) => {
   const [currentSpeed, setCurrentSpeed] = useState({ rx: 0, tx: 0 });
+  const [topUser, setTopUser] = useState(null);
 
   const onMessage = (e: any) => {
     const data = JSON.parse(e.data);
     if (data.message === 'OK' && data.meta === 'torch') {
-      const { data: { rx, tx } } = data;
+      const { data: { rx, tx, identities } } = data;
+      const identitiesTxRx = identities.map((item: any) => {
+        const {rx, tx, greatestRx, greatestTx} = item.devices.reduce((acc, current) => {
+          const { greatestTx, greatestRx } = acc;
+          const { tx: currTx = 0, rx: currRx = 0 } = current;
+          return {
+            greatestRx: greatestRx.rx > currRx ? greatestRx : current,
+            greatestTx: greatestTx.tx > currTx ? greatestTx : current,
+            rx: acc.rx + currRx,
+            tx: acc.tx + currTx
+          };
+        }, reduceDeviceDefault)
+        return {
+          ...item,
+          greatestRx,
+          greatestTx,
+          rx,
+          tx
+        }
+      }) || [];
+      const { biggestNumber, typeOf, identity } = identitiesTxRx.reduce((acc, current) => {
+        const checkWithThis = current.tx > current.rx ? current.tx : current.rx;
+        if (acc.biggestNumber > checkWithThis) {
+          return acc;
+        } 
+        return {
+          biggestNumber: checkWithThis,
+          typeOf: current.greatestTx.tx > current.greatestRx.rx ? current.greatestTx : current.greatestRx,
+          identity: current
+        }
+
+      }, greatestIdentity);
+      const { pic_ref } = identity;
+      const { name } = typeOf;
+      const topUser = biggestNumber && { pic_ref, name } || null;
+      setTopUser(topUser);
       setCurrentSpeed({ rx, tx })
     }
   }
@@ -47,6 +182,7 @@ const DashboardScreen = ({ network, auth }) => {
   const { rx, tx } = currentSpeed;
   return (
     <View style={styles.container}>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <AnimatedCircularProgress
         size={220}
         secondCicularSize={268}
@@ -120,6 +256,12 @@ const DashboardScreen = ({ network, auth }) => {
           </View>
         )}
       </AnimatedCircularProgress>
+      </View>
+      <View style={{width: '100%', flex: 1 }}>
+        <TopUserContainer
+          topUser={topUser}
+        />
+      </View>
     </View>
   );
 }
@@ -129,7 +271,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgb(245,245,245)'
+    backgroundColor: 'rgb(245,245,245)',
+    paddingTop: 50
   },
   innerContainer: {
     flexDirection: 'column',

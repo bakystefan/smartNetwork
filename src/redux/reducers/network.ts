@@ -28,8 +28,10 @@ export const INITIAL_STATE = Immutable({
         ispUp: 0,
         ispDown: 0,
         receive: 0,
-        transmit: 0
-    }
+        transmit: 0,
+        identities: []
+    },
+    topUser: null
 });
 
 /* ------------- Reducers ------------- */
@@ -63,7 +65,6 @@ export const failure = (state: any, { error }: any) =>
     });
 
 export const storeDataAboutRouter = (state: any, data: any) => {
-    console.log("AAAA!!!!!! DATAAA ROUTER", data);
     const { routerData } = data;
     return state.merge({
         routerData
