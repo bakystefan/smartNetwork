@@ -58,13 +58,13 @@ const DashboardScreen = ({ network, auth }) => {
         lineCap='round'
         secondFill={Math.round(calculatePercentageOfNumber(transmit, ispUp))}
         secondColor="#D9D9D9"
-        thirdFill={Math.round(calculatePercentageOfNumber(calculateBitsToMbits(tx), ispUp))}
+        thirdFill={Math.round(calculatePercentageOfNumber(calculateBitsToMbits(rx), ispUp))}
         thirdColor="#5F72FF"
         secondCircularFill={ispDown}
         secondCircularTintColor="#FFFFFF"
         secondCircularSecondFill={Math.round(calculatePercentageOfNumber(receive, ispDown))}
         secondCircularSecondColor="#D9D9D9"
-        secondCircularThirdFill={Math.round(calculatePercentageOfNumber(calculateBitsToMbits(rx), ispUp))}
+        secondCircularThirdFill={Math.round(calculatePercentageOfNumber(calculateBitsToMbits(tx), ispUp))}
         secondCircularThirdColor="#6EE294"
         duration={1200}
         showArrow
@@ -83,7 +83,7 @@ const DashboardScreen = ({ network, auth }) => {
                   iterationDelay={5000}
                   style={styles.currentSpeedDlValue}
                 >
-                  {calculateBitsToMbits(rx) === 0 ? '0.0' : calculateBitsToMbits(rx)}
+                  {calculateBitsToMbits(tx) === 0 ? '0.0' : calculateBitsToMbits(tx)}
                 </Animatable.Text>
                 <View style={styles.ispCalibrateTitleBox}>
                   <Text style={styles.ispCalibrateTitle}>ISP SPEED</Text>
@@ -102,7 +102,7 @@ const DashboardScreen = ({ network, auth }) => {
                     iterationDelay={5000}
                     style={styles.currentSpeedUpValue}
                   >
-                  {calculateBitsToMbits(tx) === 0 ? '0.0' : calculateBitsToMbits(tx)}
+                  {calculateBitsToMbits(rx) === 0 ? '0.0' : calculateBitsToMbits(rx)}
                 </Animatable.Text>
                 <View style={styles.ispCalibrateTitleBox}>
                   <Text style={styles.ispCalibrateTitle}>CALIBRATED</Text>
