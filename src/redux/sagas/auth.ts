@@ -89,7 +89,6 @@ export function* login(api: any, auth0Api: any, { email, password }: LoginAction
 					yield put(NetworkActions.networkSuccess(orgId, selfServe, appSettings, orgLogo, orgName, networkList))
 					return navigate({ routeName: Routes.DashboardScreen });
 				}
-				console.log("FETCH NETWORK!", fetchNetworks)
 			}
 		} else {
 			yield put(LoginActions.loginFailure({ error: "Bad credentials"} || 'Network Error'));
@@ -102,12 +101,9 @@ export function* login(api: any, auth0Api: any, { email, password }: LoginAction
 
 export function* refresh(api: any, { authRefresh }: any){
 	// const authRefresh = yield select(selectAuthRefresh)
-	console.log('authRefresh', authRefresh);
 	const authObj = {
 		refreshToken: authRefresh
 	};
-
-	console.log(authObj);
 
 	//const response = yield call(api.refreshToken, authObj)
 

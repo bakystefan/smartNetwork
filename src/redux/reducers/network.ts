@@ -63,7 +63,6 @@ export const failure = (state: any, { error }: any) =>
     });
 
 export const storeDataAboutRouter = (state: any, data: any) => {
-    console.log("AAAA!!!!!! DATAAA ROUTER", data);
     const { routerData } = data;
     return state.merge({
         routerData

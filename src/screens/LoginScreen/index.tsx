@@ -18,7 +18,7 @@ const LoginScreen = ({ auth, attemptLogin, profile, network }) => {
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('')
   useEffect(() => {
-    checkForBiometric();
+    // checkForBiometric();
   }, [])
   
   const checkForBiometric = async () => {
@@ -48,9 +48,8 @@ const LoginScreen = ({ auth, attemptLogin, profile, network }) => {
           console.log('Biometrics not supported')
         }
       }
-      
     } catch (error) {
-      console.log("JA  SAM ERROR ", error);
+      console.log("ERROR Biometrics ", error);
     }
   }
 
