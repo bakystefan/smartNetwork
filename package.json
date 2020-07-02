@@ -11,6 +11,7 @@
   "dependencies": {
     "@react-native-community/masked-view": "^0.1.6",
     "apisauce": "^1.1.1",
+    "moment": "^2.27.0",
     "moment-timezone": "^0.5.27",
     "react": "16.8.6",
     "react-native": "0.60.5",
